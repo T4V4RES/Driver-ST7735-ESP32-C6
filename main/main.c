@@ -43,15 +43,15 @@ void app_main(void)
     // Teste: Vermelho
 
     st7735_fill_screen(ST7735_RED);
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     // Teste: Verde
 
     st7735_fill_screen(ST7735_GREEN);
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     // Teste: Azul
 
     st7735_fill_screen(ST7735_BLUE);
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     // Teste: Branco
 
     st7735_fill_screen(ST7735_WHITE);
@@ -64,16 +64,16 @@ void app_main(void)
         ESP_LOGI(TAG, "A desenhar linhas...");
         st7735_fill_screen(ST7735_BLACK);
         
-        // Desenha uma linha horizontal (do inicio ao fim)
-        st7735_fill_rect(0, 20, 160, 4, ST7735_BLUE);
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        // Desenha uma linha horizontal a azul (do inicio ao fim)
+        st7735_fill_rect(0, 20, 160, 1, ST7735_BLUE);
+        vTaskDelay(pdMS_TO_TICKS(1000));
 
         // =============================================
         ESP_LOGI(TAG, "A escrever texto...");
         st7735_fill_screen(ST7735_BLACK);
         
         // Escreve uma palavra no ecrã
-        st7735_draw_string(0, 30, "Dispositivos Conectados", ST7735_WHITE, ST7735_BLACK, 1);     
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        st7735_draw_string(0, 30, "Dispositivos Conectados", ST7735_WHITE, ST7735_BLACK, 1);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

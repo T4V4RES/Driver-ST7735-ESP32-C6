@@ -17,26 +17,26 @@ Driver completo para o display **Adafruit Mini TFT 0.96" (160x80 pixels)** com c
 
 ##  Hardware Necessário
 
-| Componente | Descrição |
-|------------|-----------|
-| ESP32-C6 | Microcontrolador (ou outro ESP32) |
-| Adafruit Mini TFT 0.96" | Display ST7735S 160x80 |
-| Fios | Para conexões |
+| Componente              | Descrição                         |
+|-------------------------|-----------------------------------|
+| ESP32-C6                | Microcontrolador (ou outro ESP32) |
+| Adafruit Mini TFT 0.96" | Display ST7735S 160x80            |
+| Fios                    | Para conexões                     |
 
 ##  Pinout - Ligações
 
 ### Tabela de Conexões (ESP32-C6)
 
-| Display (Adafruit) | ESP32-C6 | Descrição |
-|--------------------|----------|-----------|
-| **Vin** | 3.3V | Alimentação |
-| **GND** | GND | Terra |
-| **SCK** (CLK) | GPIO 21 | SPI Clock |
-| **SI** (MOSI) | GPIO 19 | SPI Data |
-| **TCS** (CS) | GPIO 22 | Chip Select |
-| **RST** | GPIO 3 | Reset |
-| **DC** | GPIO 2 | Data/Command |
-| **Lite** (BL) | GPIO 15 | Backlight |
+| Display (Adafruit) | ESP32-C6 | Descrição    |
+|--------------------|----------|--------------|
+| **Vin**            | 3.3V     | Alimentação  |
+| **GND**            | GND      | Terra        |
+| **SCK** (CLK)      | GPIO 21  | SPI Clock    |
+| **SI** (MOSI)      | GPIO 19  | SPI Data     |
+| **TCS** (CS)       | GPIO 22  | Chip Select  |
+| **RST**            | GPIO 3   | Reset        |
+| **DC**             | GPIO 2   | Data/Command |
+| **Lite** (BL)      | GPIO 15  | Backlight    |
 
 ### Diagrama de Ligação
 
@@ -71,9 +71,11 @@ TFT/
         ├── CMakeLists.txt      # CMake do driver
         ├── include/
         │   ├── st7735.h        # Header principal
-        │   └── st7735_commands.h # Comandos ST7735
+        │   ├── st7735_commands.h # Comandos ST7735
+        │   └── graphics.h      # Header de gráficos
         └── src/
-            └── st7735.c        # Implementação do driver
+            ├── st7735.c        # Implementação do driver
+            └── graphics.c      # Implementação de gráficos
 ```
 
 ##  Instalação e Uso
@@ -142,16 +144,16 @@ if (ret != ESP_OK) {
 
 ### Funções Disponíveis
 
-| Função | Descrição |
-|--------|-----------|
-| `st7735_init(cfg)` | Inicializa o display |
-| `st7735_fill_screen(color)` | Preenche o ecrã com uma cor |
-| `st7735_draw_pixel(x, y, color)` | Desenha um pixel |
-| `st7735_fill_rect(x, y, w, h, color)` | Desenha um retângulo preenchido |
-| `st7735_draw_char(x, y, c, color, bg, size)` | Desenha um caractere |
-| `st7735_draw_string(x, y, str, color, bg, size)` | Desenha uma string |
-| `st7735_set_rotation(0-3)` | Define a rotação do ecrã |
-| `st7735_invert_display(true/false)` | Inverte as cores |
+| Função                                           |  Descrição                      |
+|--------------------------------------------------|---------------------------------|
+| `st7735_init(cfg)`                               | Inicializa o display            |
+| `st7735_fill_screen(color)`                      | Preenche o ecrã com uma cor     |
+| `st7735_draw_pixel(x, y, color)`                 | Desenha um pixel                |
+| `st7735_fill_rect(x, y, w, h, color)`            | Desenha um retângulo preenchido |
+| `st7735_draw_char(x, y, c, color, bg, size)`     | Desenha um caractere            |
+| `st7735_draw_string(x, y, str, color, bg, size)` | Desenha uma string              |
+| `st7735_set_rotation(0-3)`                       | Define a rotação do ecrã        |
+| `st7735_invert_display(true/false)`              | Inverte as cores                |
 
 ### Cores Predefinidas (RGB565)
 
@@ -179,12 +181,12 @@ uint16_t minha_cor = RGB565(255, 128, 64);  // Laranja claro
 
 ##  Rotações do Display
 
-| Valor | Orientação | Dimensões |
-|-------|------------|-----------|
-| 0 | Portrait (normal) | 80x160 |
-| 1 | Landscape (90°) | 160x80 |
-| 2 | Portrait invertido (180°) | 80x160 |
-| 3 | Landscape invertido (270°) | 160x80 |
+| Valor | Orientação                 | Dimensões |
+|-------|----------------------------|-----------|
+| 0     | Portrait (normal)          | 80x160    |
+| 1     | Landscape (90°)            | 160x80    |
+| 2     | Portrait invertido (180°)  | 80x160    |
+| 3     | Landscape invertido (270°) | 160x80    |
 
 ```c
 st7735_set_rotation(1);  // Landscape 160x80
@@ -219,20 +221,6 @@ st7735_fill_rect(0, 40, 160, 1, ST7735_WHITE);
 st7735_fill_rect(80, 0, 1, 80, ST7735_WHITE);
 ```
 
-### Exemplo 4: Tabela de Dados
-
-```c
-// Título
-st7735_draw_string(30, 2, "SENSORES", ST7735_CYAN, ST7735_BLACK, 1);
-
-// Linha separadora
-st7735_fill_rect(0, 12, 160, 1, ST7735_GRAY);
-
-// Dados
-st7735_draw_string(5, 20, "Temp:", ST7735_WHITE, ST7735_BLACK, 1);
-st7735_draw_string(50, 20, "25.5C", ST7735_YELLOW, ST7735_BLACK, 1);
-```
-
 ##  Como Funciona o Driver
 
 ### Arquitetura
@@ -242,7 +230,7 @@ st7735_draw_string(50, 20, "25.5C", ST7735_YELLOW, ST7735_BLACK, 1);
 │                    Aplicação (main.c)                   │
 ├─────────────────────────────────────────────────────────┤
 │                   API Pública (st7735.h)                │
-│  st7735_init | st7735_draw_* | st7735_fill_*           │
+│  st7735_init | st7735_draw_* | st7735_fill_*            │
 ├─────────────────────────────────────────────────────────┤
 │              Implementação (st7735.c)                   │
 │  write_command | write_data | set_address_window        │
@@ -302,10 +290,10 @@ O display Adafruit Mini 0.96" usa **offsets** porque o painel 80x160 está monta
 
 Cada pixel usa 16 bits (2 bytes):
 ```
-Bit:  15 14 13 12 11 | 10 9 8 7 6 5 | 4 3 2 1 0
+Bit:  15 14 13 12 11 | 10 09 08 07 06 05 | 04 03 02 01 00
       R4 R3 R2 R1 R0 | G5 G4 G3 G2 G1 G0 | B4 B3 B2 B1 B0
-      └─── Red ────┘  └──── Green ────┘   └─── Blue ───┘
-         (5 bits)        (6 bits)           (5 bits)
+      └─── Red ────┘   └──── Green ────┘   └─── Blue ───┘
+         (5 bits)           (6 bits)          (5 bits)
 ```
 
 ##  Resolução de Problemas
@@ -335,16 +323,16 @@ Bit:  15 14 13 12 11 | 10 9 8 7 6 5 | 4 3 2 1 0
 
 ##  Especificações Técnicas
 
-| Parâmetro | Valor |
-|-----------|-------|
-| Controlador | ST7735S |
-| Resolução | 160x80 pixels |
-| Cores | 65K (RGB565) |
-| Interface | SPI (4-wire) |
-| Velocidade SPI | 8 MHz (suporta até 32 MHz) |
-| Tensão | 3.3V |
-| Tamanho Ecrã | 0.96 polegadas |
-| Corrente Típica | ~20mA |
+| Parâmetro       | Valor                      |
+|-----------------|----------------------------|
+| Controlador     | ST7735S                    |
+| Resolução       | 160x80 pixels              |
+| Cores           | 65K (RGB565)               |
+| Interface       | SPI (4-wire)               |
+| Velocidade SPI  | 8 MHz (suporta até 32 MHz) |
+| Tensão          | 3.3V                       |
+| Tamanho Ecrã    | 0.96 polegadas             |
+| Corrente Típica | ~20mA                      |
 
 ##  Licença
 
