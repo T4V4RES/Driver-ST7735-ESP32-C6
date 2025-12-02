@@ -2,7 +2,7 @@
 
 Driver completo para o display **Adafruit Mini TFT 0.96" (160x80 pixels)** com controlador ST7735S, desenvolvido para **ESP32-C6** usando o framework **ESP-IDF v5.x**.
 
-![Display](https://cdn-shop.adafruit.com/970x728/3533-00.jpg)
+![Display](img/minibot.webp)
 
 ## Características
 
@@ -12,8 +12,8 @@ Driver completo para o display **Adafruit Mini TFT 0.96" (160x80 pixels)** com c
 -  4 rotações de ecrã disponíveis
 -  Cores RGB565 (65K cores)
 -  Funções para desenhar pixéis, retângulos e texto
--  Gestão automática de backlight
--  Compatível com ESP32-C6(unica testada)
+-  Gestão automática de backlight (se `bl_io_num` ≥ 0, o pino é configurado como saída e colocado a HIGH durante `st7735_init()`)
+-  Compatível com ESP32-C6 (única testada)
 
 ##  Hardware Necessário
 
@@ -154,6 +154,8 @@ if (ret != ESP_OK) {
 | `st7735_draw_string(x, y, str, color, bg, size)` | Desenha uma string              |
 | `st7735_set_rotation(0-3)`                       | Define a rotação do ecrã        |
 | `st7735_invert_display(true/false)`              | Inverte as cores                |
+| `st7735_get_width()`                             | Obtém a largura atual do ecrã   |
+| `st7735_get_height()`                            | Obtém a altura atual do ecrã    |
 
 ### Cores Predefinidas (RGB565)
 
@@ -174,9 +176,9 @@ ST7735_GRAY    // Cinzento
 
 ```c
 // Macro para criar cor RGB565
-#define RGB565(r, g, b) ((((r) & 0xF8) << 8) | (((g) & 0xFC) << 3) | ((b) >> 3))
+#define ST7735_RGB565(r, g, b) ((((r) & 0xF8) << 8) | (((g) & 0xFC) << 3) | ((b) >> 3))
 
-uint16_t minha_cor = RGB565(255, 128, 64);  // Laranja claro
+uint16_t minha_cor = ST7735_RGB565(255, 128, 64);  // Laranja claro
 ```
 
 ##  Rotações do Display
@@ -227,17 +229,19 @@ st7735_fill_rect(80, 0, 1, 80, ST7735_WHITE);
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Aplicação (main.c)                   │
+│                      Application                        │
 ├─────────────────────────────────────────────────────────┤
-│                   API Pública (st7735.h)                │
-│  st7735_init | st7735_draw_* | st7735_fill_*            │
-├─────────────────────────────────────────────────────────┤
-│              Implementação (st7735.c)                   │
-│  write_command | write_data | set_address_window        │
+│                         |                               │
+│                         |            Graphics           │
+│                         │                               │                  
+│                         └───────────────────────────────┤      
+│                                                         │
+│                    ST7735 Driver                        │
+│                                                         │
 ├─────────────────────────────────────────────────────────┤
 │                ESP-IDF SPI Master Driver                │
 ├─────────────────────────────────────────────────────────┤
-│                    Hardware SPI                         │
+│                     Hardware SPI                        │
 └─────────────────────────────────────────────────────────┘
 ```
 
