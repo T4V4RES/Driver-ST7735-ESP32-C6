@@ -152,6 +152,16 @@ uint16_t st7735_get_width(void);
  */
 uint16_t st7735_get_height(void);
 
+/**
+ * @brief Desenha uma imagem RGB565 no display
+ * @param x Coordenada X do canto superior esquerdo
+ * @param y Coordenada Y do canto superior esquerdo
+ * @param w Largura da imagem
+ * @param h Altura da imagem
+ * @param data Ponteiro para array de pixels RGB565 (big-endian)
+ */
+void st7735_draw_image(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *data);
+
 #ifdef __cplusplus
 }
 #endif

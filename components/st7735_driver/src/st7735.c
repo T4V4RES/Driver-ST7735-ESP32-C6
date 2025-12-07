@@ -256,5 +256,35 @@ void st7735_draw_string(uint16_t x, uint16_t y, const char *str, uint16_t color,
     }
 }
 
+
+
 uint16_t st7735_get_width(void) { return display_width; }
 uint16_t st7735_get_height(void) { return display_height; }
+
+void st7735_draw_image(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *data) {
+    if (x >= display_width || y >= display_height) return;
+    if (x + w > display_width) w = display_width - x;
+    if (y + h > display_height) h = display_height - y;
+    
+    set_address_window(x, y, x + w - 1, y + h - 1);
+    
+    // Buffer para uma linha da imagem
+    size_t line_size = w * 2;
+    uint8_t *buffer = heap_caps_malloc(line_size, MALLOC_CAP_DMA);
+    if (!buffer) { 
+        ESP_LOGE(TAG, "DMA malloc falhou para imagem"); 
+        return; 
+    }
+    
+    // Enviar linha por linha
+    for (uint16_t row = 0; row < h; row++) {
+        for (uint16_t col = 0; col < w; col++) {
+            uint16_t pixel = data[row * w + col];
+            buffer[col * 2] = pixel >> 8;      // High byte
+            buffer[col * 2 + 1] = pixel & 0xFF; // Low byte
+        }
+        write_data(buffer, line_size);
+    }
+    
+    heap_caps_free(buffer);
+}

@@ -173,3 +173,12 @@ void draw_string(uint16_t x, uint16_t y, const char *str, uint16_t color, uint16
         str++;
     }
 }
+
+void draw_image_rgb565(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint16_t *image_data) {
+    if (image_data == NULL) {
+        return;
+    }
+    
+    // Usa a função otimizada do driver ST7735
+    st7735_draw_image(x, y, width, height, image_data);
+}
