@@ -220,10 +220,10 @@ void st7735_fill_screen(uint16_t color) {
 void st7735_set_rotation(uint8_t rotation) {
     uint8_t madctl;
     switch (rotation % 4) {
-        case 0: madctl=0x00; colstart=26; rowstart=1; display_width=80; display_height=160; break;
-        case 1: madctl=0x60; colstart=1; rowstart=26; display_width=160; display_height=80; break;
-        case 2: madctl=0xC0; colstart=26; rowstart=1; display_width=80; display_height=160; break;
-        case 3: madctl=0xA0; colstart=1; rowstart=26; display_width=160; display_height=80; break;
+        case 0: madctl=0x08; colstart=26; rowstart=1; display_width=80; display_height=160; break;
+        case 1: madctl=0x78; colstart=1; rowstart=26; display_width=160; display_height=80; break;
+        case 2: madctl=0xC8; colstart=26; rowstart=1; display_width=80; display_height=160; break;
+        case 3: madctl=0xB8; colstart=1; rowstart=26; display_width=160; display_height=80; break;
         default: return;
     }
     write_command(ST7735_MADCTL);
